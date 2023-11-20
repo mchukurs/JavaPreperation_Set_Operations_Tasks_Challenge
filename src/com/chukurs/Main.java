@@ -1,0 +1,31 @@
+package com.chukurs;
+
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+
+        Set<Task> tasks = TaskData.getTasks("all");
+        sortAndPrint("All tasks",tasks);
+
+        Comparator<Task> sortByPriority = Comparator.comparing((Task t)-> t.priority());
+        Set<Task> annsTasks = TaskData.getTasks("ann");
+        sortAndPrint("Anns tasks",annsTasks,sortByPriority);
+    }
+    private static void sortAndPrint(String header, Collection<Task> collection){
+        sortAndPrint(header,collection,null);
+    }
+    private static void sortAndPrint(String header, Collection<Task> collection, Comparator<Task> sorter){
+
+        String lineSeparator = "_".repeat(90);
+        System.out.println(lineSeparator);
+        System.out.println(header);
+        System.out.println(lineSeparator);
+
+        List<Task> list = new ArrayList<>(collection);
+        list.sort(sorter);
+        list.forEach(System.out::println);
+
+
+    }
+}
