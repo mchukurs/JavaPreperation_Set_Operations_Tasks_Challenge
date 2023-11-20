@@ -53,12 +53,12 @@ public class TaskData {
         String[] data = line.split(",");
         //we can also use String::trim, but here I wanted to enforce my understanding of lambdas.
         Arrays.asList(data).replaceAll((s)->String.format(s).trim());
-        //    ASSIGNED, IN_PROGRESS, NOT_YET_ASSIGNED;
-        Status status = (data.length <= 3) ? Status.NOT_YET_ASSIGNED:
+        //     IN_PROGRESS, IN_QUEUE, ASSIGNED;
+        Status status = (data.length <= 3) ? Status.IN_QUEUE:
         Status.valueOf(data[3].toUpperCase().replace(' ','_'));
 
         Priority priority = Priority.valueOf(data[2].toUpperCase());
-        taskList.add(new Task(owner,data[0],data[1],status,priority));
+        taskList.add(new Task(user,data[0],data[1],status,priority));
 
     }
 
