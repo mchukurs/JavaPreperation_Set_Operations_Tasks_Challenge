@@ -6,7 +6,7 @@ public class Main {
     public static void main(String[] args) {
 
         Set<Task> tasks = TaskData.getTasks("all");
-        sortAndPrint("Bosses tasks ",tasks);
+        sortAndPrint("Bosses tasks ", tasks);
 
         Comparator<Task> sortByPriority = Comparator.comparing((Task t) -> t.priority());
         Set<Task> annsTasks = TaskData.getTasks("ann");
@@ -14,20 +14,38 @@ public class Main {
 
         Set<Task> bobTasks = TaskData.getTasks("bob");
         Set<Task> carolTasks = TaskData.getTasks("carol");
-
-        Set<Task> assignedSets = getUnion(List.of(annsTasks,bobTasks,carolTasks));
+        List<Set<Task>> sets = List.of(annsTasks, bobTasks, carolTasks);
+        Set<Task> assignedSets = getUnion(List.of(annsTasks, bobTasks, carolTasks));
 
         sortAndPrint("All assigned tasks ", assignedSets);
-        Set<Task> everyTask = getUnion(List.of(assignedSets,tasks));
-        sortAndPrint("All tasks ",everyTask);
+        Set<Task> everyTask = getUnion(List.of(assignedSets, tasks));
+        sortAndPrint("All tasks ", everyTask);
 
-        Set<Task> missingTasks = getDifference(everyTask,tasks);
+        Set<Task> missingTasks = getDifference(everyTask, tasks);
         sortAndPrint("Missing tasks ", missingTasks);
 
-        Set<Task> unassignedTasks = getDifference(everyTask,assignedSets);
-        sortAndPrint("Unassigned tasks ", unassignedTasks,sortByPriority);
+        Set<Task> unassignedTasks = getDifference(everyTask, assignedSets);
+        sortAndPrint("Unassigned tasks ", unassignedTasks, sortByPriority);
 
+        //how to get the tasks which are duplicate at least for 2 people?
+        //union(intersect each member with each other), its asymmetrical so no need to do both ways
 
+        Set<Task> overlap = getUnion(List.of(
+                getIntersection(annsTasks, bobTasks),
+                getIntersection(carolTasks, bobTasks),
+                getIntersection(annsTasks, carolTasks)
+        ));
+        sortAndPrint("Assigned to multiple people ", overlap, sortByPriority);
+        //the above is not good enough because we have only single entry and they all are for ann
+
+        List<Task> overlapping = new ArrayList<>();
+        for (Set<Task> set : sets) {
+            //extract
+            Set<Task> duplicates = getIntersection(set, overlap);
+            overlapping.addAll(duplicates);
+        }
+        Comparator<Task> priorityNatural = sortByPriority.thenComparing(Comparator.naturalOrder());
+        sortAndPrint("Overlapping ", overlapping, priorityNatural);
 
     }
 
